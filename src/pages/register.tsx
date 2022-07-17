@@ -1,24 +1,29 @@
 import React from 'react';
-import { Form, Formik, validateYupSchema } from 'formik';
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  FormErrorMessage,
-  Box,
-  Button
-} from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
+import { Box, Button } from '@chakra-ui/react';
 import { Wrapper } from '../components/Wrapper';
 import { InputField } from '../components/InputField';
+import { useRegisterMutation } from '../generated/graphql';
+import { toErrorMap } from '../utils/toErrorMap';
 
 interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
+  const [{}, register] = useRegisterMutation();
   return (
     <Wrapper variant='small'>
       <Formik
         initialValues={{ username: '', password: '' }}
-        onSubmit={console.log}
+        onSubmit={async (v, { setErrors }) => {
+          const response = await register({
+            username: v.username,
+            password: v.password
+          });
+
+          if (response.data?.register.errors) {
+            setErrors(toErrorMap(response.data.register.errors));
+          }
+        }}
       >
         {({ isSubmitting }) => (
           <Form>
