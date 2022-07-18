@@ -1,12 +1,17 @@
 import { Box, Button, Flex, HStack } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import { useEffect, useState } from 'react';
 import { useLogOutMutation, useMeQuery } from '../generated/graphql';
 import { isServer } from '../utils/isServer';
 
 interface NavBarProps {}
 
 export const NavBar: React.FC<NavBarProps> = () => {
-  const [{ data, fetching: meFetching }] = useMeQuery({ pause: isServer() });
+  // useEffect only runs in the browser, so just set state, which will rerender the page
+  const [isServer, setIsServer] = useState(true);
+  useEffect(() => setIsServer(false), []);
+
+  const [{ data, fetching: meFetching }] = useMeQuery({ pause: isServer });
   const [{ fetching: LogOutFetching }, logout] = useLogOutMutation();
   let body = null;
 
