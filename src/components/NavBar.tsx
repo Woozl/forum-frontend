@@ -1,4 +1,5 @@
-import { Box, Button, Flex, HStack } from '@chakra-ui/react';
+import { Box, Button, ButtonGroup, Flex, HStack } from '@chakra-ui/react';
+import Link from 'next/link';
 import NextLink from 'next/link';
 import { useEffect, useState } from 'react';
 import { useLogOutMutation, useMeQuery } from '../generated/graphql';
@@ -50,10 +51,11 @@ export const NavBar: React.FC<NavBarProps> = () => {
     <Box bg='blue.100' py='4' px='4'>
       <HStack spacing='10' justify='space-between'>
         <Flex justify='space-between' flex='1'>
-          {/* <ButtonGroup variant='link' spacing='8'>
-            <Button color='black'>Link 1</Button>
-            <Button color='black'>Link 2</Button>
-          </ButtonGroup> */}
+          <ButtonGroup variant='link' spacing='8'>
+            <Link href='/create-post'>
+              <Button color='black'>Create Post</Button>
+            </Link>
+          </ButtonGroup>
           <HStack spacing='3' ml='auto'>
             {body}
           </HStack>
