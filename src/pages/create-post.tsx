@@ -8,15 +8,12 @@ import { Layout } from '../components/Layout';
 import { Wrapper } from '../components/Wrapper';
 import { useCreatePostMutation, useMeQuery } from '../generated/graphql';
 import { createUrqlClient } from '../utils/createUrqlClient';
+import { useIsAuth } from '../utils/useIsAuth';
 
 const CreatePost: React.FC<{}> = ({}) => {
-  const [{ fetching, data }] = useMeQuery();
-  const router = useRouter();
   const [, createPost] = useCreatePostMutation();
-
-  useEffect(() => {
-    if (!fetching && data?.me === null) router.replace('/login');
-  }, [fetching, data, router]);
+  const router = useRouter();
+  useIsAuth();
 
   return (
     <Layout variant='small'>
