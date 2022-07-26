@@ -7,17 +7,18 @@ import { Layout } from '../components/Layout';
 const Index = () => {
   const [{ data }] = usePostsQuery({
     variables: {
-      limit: 10
+      limit: 10,
+      textSnippetLength: 220
     }
   });
   return (
     <Layout>
       {data?.posts ? (
-        <Stack spacing='8'>
+        <Stack spacing='4'>
           {data?.posts.map((post) => (
             <Box key={post.id} p='5' shadow='md' borderWidth='1px'>
               <Heading fontSize='xl'>{post.title}</Heading>
-              <Text mt='8'>{post.textSnippet}</Text>
+              <Text mt='2'>{post.textSnippet}</Text>
             </Box>
           ))}
         </Stack>

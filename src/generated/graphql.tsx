@@ -83,6 +83,11 @@ export type Post = {
   updatedAt: Scalars['String'];
 };
 
+
+export type PostTextSnippetArgs = {
+  clipLength?: InputMaybe<Scalars['Float']>;
+};
+
 export type PostInput = {
   text: Scalars['String'];
   title: Scalars['String'];
@@ -184,10 +189,11 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: nu
 export type PostsQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: InputMaybe<Scalars['String']>;
+  textSnippetLength?: InputMaybe<Scalars['Float']>;
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', title: string, textSnippet: string, id: number, createdAt: string, updatedAt: string }> };
+export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', title: string, id: number, createdAt: string, updatedAt: string, textSnippet: string }> };
 
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
@@ -294,13 +300,13 @@ export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, '
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
 export const PostsDocument = gql`
-    query Posts($limit: Int!, $cursor: String) {
+    query Posts($limit: Int!, $cursor: String, $textSnippetLength: Float) {
   posts(limit: $limit, cursor: $cursor) {
     title
-    textSnippet
     id
     createdAt
     updatedAt
+    textSnippet(clipLength: $textSnippetLength)
   }
 }
     `;

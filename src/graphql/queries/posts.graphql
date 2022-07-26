@@ -1,9 +1,9 @@
-query Posts($limit: Int!, $cursor: String) {
+query Posts($limit: Int!, $cursor: String, $textSnippetLength: Float) {
   posts(limit: $limit, cursor: $cursor) {
     title
-    textSnippet
     id
     createdAt
     updatedAt
+    textSnippet(clipLength: $textSnippetLength)
   }
 }
