@@ -3,12 +3,16 @@ import NavBar from '../components/NavBar';
 import { createUrqlClient } from '../utils/createUrqlClient';
 import { usePostsQuery } from '../generated/graphql';
 import { List, ListItem } from '@chakra-ui/react';
+import { Layout } from '../components/Layout';
 
 const Index = () => {
-  const [{ data }] = usePostsQuery();
+  const [{ data }] = usePostsQuery({
+    variables: {
+      limit: 10
+    }
+  });
   return (
-    <>
-      <NavBar />
+    <Layout>
       {data?.posts ? (
         <List>
           {data?.posts.map((post) => (
@@ -16,7 +20,7 @@ const Index = () => {
           ))}
         </List>
       ) : null}
-    </>
+    </Layout>
   );
 };
 
