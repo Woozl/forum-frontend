@@ -1,8 +1,7 @@
 import { withUrqlClient } from 'next-urql';
-import NavBar from '../components/NavBar';
 import { createUrqlClient } from '../utils/createUrqlClient';
 import { usePostsQuery } from '../generated/graphql';
-import { List, ListItem } from '@chakra-ui/react';
+import { Box, Heading, Stack, Text } from '@chakra-ui/react';
 import { Layout } from '../components/Layout';
 
 const Index = () => {
@@ -14,11 +13,14 @@ const Index = () => {
   return (
     <Layout>
       {data?.posts ? (
-        <List>
+        <Stack spacing='8'>
           {data?.posts.map((post) => (
-            <ListItem key={post.id}>{post.title}</ListItem>
+            <Box key={post.id} p='5' shadow='md' borderWidth='1px'>
+              <Heading fontSize='xl'>{post.title}</Heading>
+              <Text mt='8'>{post.textSnippet}</Text>
+            </Box>
           ))}
-        </List>
+        </Stack>
       ) : null}
     </Layout>
   );
