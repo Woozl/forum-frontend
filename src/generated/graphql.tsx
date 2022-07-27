@@ -71,6 +71,12 @@ export type MutationUpdatePostArgs = {
   title?: InputMaybe<Scalars['String']>;
 };
 
+export type PaginatedPosts = {
+  __typename?: 'PaginatedPosts';
+  hasMore: Scalars['Boolean'];
+  posts: Array<Post>;
+};
+
 export type Post = {
   __typename?: 'Post';
   createdAt: Scalars['String'];
@@ -98,7 +104,7 @@ export type Query = {
   hello: Scalars['String'];
   me?: Maybe<User>;
   post?: Maybe<Post>;
-  posts: Array<Post>;
+  posts: PaginatedPosts;
 };
 
 
@@ -189,11 +195,11 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: nu
 export type PostsQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: InputMaybe<Scalars['String']>;
-  textSnippetLength?: InputMaybe<Scalars['Float']>;
+  clipLength?: InputMaybe<Scalars['Float']>;
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', title: string, id: number, createdAt: string, updatedAt: string, textSnippet: string }> };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', title: string, text: string, textSnippet: string, points: number, creatorId: number, id: number, createdAt: string, updatedAt: string }> } };
 
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
@@ -300,13 +306,19 @@ export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, '
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
 export const PostsDocument = gql`
-    query Posts($limit: Int!, $cursor: String, $textSnippetLength: Float) {
+    query Posts($limit: Int!, $cursor: String, $clipLength: Float) {
   posts(limit: $limit, cursor: $cursor) {
-    title
-    id
-    createdAt
-    updatedAt
-    textSnippet(clipLength: $textSnippetLength)
+    hasMore
+    posts {
+      title
+      text
+      textSnippet(clipLength: $clipLength)
+      points
+      creatorId
+      id
+      createdAt
+      updatedAt
+    }
   }
 }
     `;

@@ -1,9 +1,15 @@
-query Posts($limit: Int!, $cursor: String, $textSnippetLength: Float) {
+query Posts($limit: Int!, $cursor: String, $clipLength: Float) {
   posts(limit: $limit, cursor: $cursor) {
-    title
-    id
-    createdAt
-    updatedAt
-    textSnippet(clipLength: $textSnippetLength)
+    hasMore
+    posts {
+      title
+      text
+      textSnippet(clipLength: $clipLength)
+      points
+      creatorId
+      id
+      createdAt
+      updatedAt
+    }
   }
 }
