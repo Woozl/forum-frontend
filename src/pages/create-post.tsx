@@ -20,6 +20,7 @@ const CreatePost: React.FC<{}> = ({}) => {
       <Formik
         initialValues={{ title: '', text: '' }}
         onSubmit={async (v) => {
+          console.log(v);
           const { error } = await createPost({ input: v });
           if (!error) router.push('/');
         }}
@@ -30,10 +31,11 @@ const CreatePost: React.FC<{}> = ({}) => {
               <Heading size='md'>Create Post</Heading>
               <InputField name='title' placeholder='Post Title' label='' />
               <Box mt='4'>
-                <Textarea
+                <InputField
                   name='text'
                   placeholder='Enter post text here...'
-                  minHeight='60'
+                  isTextArea={true}
+                  label=''
                 />
               </Box>
               <Button
