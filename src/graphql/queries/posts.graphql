@@ -10,6 +10,10 @@ query Posts($limit: Int!, $cursor: String, $clipLength: Float) {
       id
       createdAt
       updatedAt
+      creator {
+        id
+        username
+      }
     }
   }
 }

@@ -30,6 +30,7 @@ const Index = () => {
               <Flex>
                 <Heading fontSize='xl'>{post.title}</Heading>
                 <Text ml='auto' textColor='gray.500'>
+                  {post.creator.username} |{' '}
                   {new Date(parseInt(post.createdAt)).toLocaleString('en-US')}
                 </Text>
               </Flex>
