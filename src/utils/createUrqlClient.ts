@@ -1,4 +1,4 @@
-import { cacheExchange, query, Resolver } from '@urql/exchange-graphcache';
+import { cacheExchange, Cache, Resolver } from '@urql/exchange-graphcache';
 import Router from 'next/router';
 import {
   dedupExchange,
@@ -15,6 +15,14 @@ import {
   RegisterMutation
 } from '../generated/graphql';
 import { betterUpdateQuery } from './betterUpdateQuery';
+
+function invalidateAllPosts(cache: Cache) {
+  const allFields = cache.inspectFields('Query');
+  const fieldInfos = allFields.filter((info) => info.fieldName === 'posts');
+  fieldInfos.forEach((fi) => {
+    cache.invalidate('Query', 'posts', fi.arguments || {});
+  });
+}
 
 const errorExchange: Exchange =
   ({ forward }) =>
@@ -138,11 +146,7 @@ export const createUrqlClient = (ssrExchange: any) => ({
       updates: {
         Mutation: {
           createPost: (_result, args, cache, info) => {
-            console.log(cache.inspectFields('Query'));
-            cache.invalidate('Query', 'posts', {
-              limit: 15
-            });
-            console.log(cache.inspectFields('Query'));
+            invalidateAllPosts(cache);
           },
           logout: (_result, args, cache, info) => {
             betterUpdateQuery<LogOutMutation, MeQuery>(
