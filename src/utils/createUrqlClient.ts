@@ -1,4 +1,4 @@
-import { cacheExchange, Resolver } from '@urql/exchange-graphcache';
+import { cacheExchange, query, Resolver } from '@urql/exchange-graphcache';
 import Router from 'next/router';
 import {
   dedupExchange,
@@ -137,6 +137,13 @@ export const createUrqlClient = (ssrExchange: any) => ({
       },
       updates: {
         Mutation: {
+          createPost: (_result, args, cache, info) => {
+            console.log(cache.inspectFields('Query'));
+            cache.invalidate('Query', 'posts', {
+              limit: 15
+            });
+            console.log(cache.inspectFields('Query'));
+          },
           logout: (_result, args, cache, info) => {
             betterUpdateQuery<LogOutMutation, MeQuery>(
               cache,
