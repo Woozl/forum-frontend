@@ -13,6 +13,7 @@ import {
 import { Layout } from '../components/Layout';
 import { useState } from 'react';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
+import { VoteSection } from '../components/VoteSection';
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -43,26 +44,7 @@ const Index = () => {
               borderRadius='2xl'
             >
               <Flex>
-                <Flex
-                  direction='column'
-                  justifyContent='center'
-                  alignItems='center'
-                  mr='4'
-                >
-                  <IconButton
-                    size='sm'
-                    aria-label='upvote'
-                    colorScheme='blue'
-                    icon={<TriangleUpIcon />}
-                  />
-                  <Text fontSize='xl'>{post.points}</Text>
-                  <IconButton
-                    size='sm'
-                    aria-label='downvote'
-                    colorScheme='red'
-                    icon={<TriangleDownIcon />}
-                  />
-                </Flex>
+                <VoteSection post={post} />
                 <Box w='100%'>
                   <Flex>
                     <Heading fontSize='xl'>{post.title}</Heading>
