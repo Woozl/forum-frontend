@@ -3,6 +3,7 @@ fragment PostSnippet on Post {
   text
   textSnippet(clipLength: $clipLength)
   points
+  voteStatus
   creatorId
   id
   createdAt
