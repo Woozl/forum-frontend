@@ -1,9 +1,18 @@
 import { withUrqlClient } from 'next-urql';
 import { createUrqlClient } from '../utils/createUrqlClient';
 import { PostsDocument, usePostsQuery } from '../generated/graphql';
-import { Box, Button, Flex, Heading, Stack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  Stack,
+  Text
+} from '@chakra-ui/react';
 import { Layout } from '../components/Layout';
 import { useState } from 'react';
+import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -26,15 +35,48 @@ const Index = () => {
       {!fetching && data?.posts ? (
         <Stack spacing='4'>
           {data?.posts.posts.map((post) => (
-            <Box key={post.id} p='5' shadow='md' borderWidth='1px'>
+            <Box
+              key={post.id}
+              p='5'
+              shadow='md'
+              borderWidth='1px'
+              borderRadius='2xl'
+            >
               <Flex>
-                <Heading fontSize='xl'>{post.title}</Heading>
-                <Text ml='auto' textColor='gray.500'>
-                  {post.creator.username} |{' '}
-                  {new Date(parseInt(post.createdAt)).toLocaleString('en-US')}
-                </Text>
+                <Flex
+                  direction='column'
+                  justifyContent='center'
+                  alignItems='center'
+                  mr='4'
+                >
+                  <IconButton
+                    size='sm'
+                    aria-label='upvote'
+                    colorScheme='blue'
+                    icon={<TriangleUpIcon />}
+                  />
+                  <Text fontSize='xl'>{post.points}</Text>
+                  <IconButton
+                    size='sm'
+                    aria-label='downvote'
+                    colorScheme='red'
+                    icon={<TriangleDownIcon />}
+                  />
+                </Flex>
+                <Box w='100%'>
+                  <Flex>
+                    <Heading fontSize='xl'>{post.title}</Heading>
+                    <Text ml='auto' textColor='gray.500'>
+                      {post.creator.username} |{' '}
+                      {new Date(parseInt(post.createdAt)).toLocaleString(
+                        'en-US'
+                      )}
+                    </Text>
+                  </Flex>
+
+                  <Text mt='2'>{post.textSnippet}</Text>
+                </Box>
               </Flex>
-              <Text mt='2'>{post.textSnippet}</Text>
             </Box>
           ))}
         </Stack>
