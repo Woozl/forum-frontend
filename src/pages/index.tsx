@@ -1,19 +1,19 @@
 import { withUrqlClient } from 'next-urql';
 import { createUrqlClient } from '../utils/createUrqlClient';
-import { PostsDocument, usePostsQuery } from '../generated/graphql';
+import { usePostsQuery } from '../generated/graphql';
 import {
   Box,
   Button,
   Flex,
   Heading,
-  IconButton,
+  Link,
   Stack,
   Text
 } from '@chakra-ui/react';
 import { Layout } from '../components/Layout';
 import { useState } from 'react';
-import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import { VoteSection } from '../components/VoteSection';
+import NextLink from 'next/link';
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -47,7 +47,11 @@ const Index = () => {
                 <VoteSection post={post} />
                 <Box w='100%'>
                   <Flex>
-                    <Heading fontSize='xl'>{post.title}</Heading>
+                    <NextLink href='/post/[id]' as={`/post/${post.id}`}>
+                      <Link>
+                        <Heading fontSize='xl'>{post.title}</Heading>
+                      </Link>
+                    </NextLink>
                     <Text ml='auto' textColor='gray.500'>
                       {post.creator.username} |{' '}
                       {new Date(parseInt(post.createdAt)).toLocaleString(
