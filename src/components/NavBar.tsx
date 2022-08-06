@@ -7,11 +7,7 @@ import { useLogOutMutation, useMeQuery } from '../generated/graphql';
 interface NavBarProps {}
 
 export const NavBar: React.FC<NavBarProps> = () => {
-  // useEffect only runs in the browser, so just set state, which will rerender the page
-  const [isServer, setIsServer] = useState(true);
-  useEffect(() => setIsServer(false), []);
-
-  const [{ data, fetching: meFetching }] = useMeQuery({ pause: isServer });
+  const [{ data, fetching: meFetching }] = useMeQuery();
   const [{ fetching: LogOutFetching }, logout] = useLogOutMutation();
   let body = null;
 

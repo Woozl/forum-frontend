@@ -129,24 +129,37 @@ const cursorPagination = (): Resolver => {
   };
 };
 
-export const createUrqlClient = (ssrExchange: any) => ({
-  url: 'http://localhost:4000/graphql',
-  fetchOptions: {
-    credentials: 'include' as const
-  },
-  exchanges: [
-    dedupExchange,
-    cacheExchange({
-      keys: {
-        PaginatedPosts: () => null
-      },
-      resolvers: {
-        Query: {
-          posts: cursorPagination()
-        }
-      },
-      updates: {
-        Mutation: {
+export const createUrqlClient = (ssrExchange: any, ctx: any) => {
+  let cookie = '';
+
+  // only run on server
+  if (typeof window === 'undefined') {
+    cookie = ctx.req.headers.cookie;
+  }
+
+  return {
+    url: 'http://localhost:4000/graphql',
+    fetchOptions: {
+      credentials: 'include' as const,
+      headers: cookie
+        ? {
+            cookie
+          }
+        : undefined
+    },
+    exchanges: [
+      dedupExchange,
+      cacheExchange({
+        keys: {
+          PaginatedPosts: () => null
+        },
+        resolvers: {
+          Query: {
+            posts: cursorPagination()
+          }
+        },
+        updates: {
+          Mutation: {
             vote: (_result, args, cache, info) => {
               const { postId, value } = args as VoteMutationVariables;
               const data = cache.readFragment(
