@@ -134,7 +134,7 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 
   // only run on server
   if (typeof window === 'undefined') {
-    cookie = ctx.req.headers.cookie;
+    cookie = ctx?.req?.headers.cookie;
   }
 
   return {
