@@ -1,30 +1,39 @@
 import { withUrqlClient } from 'next-urql';
 import { createUrqlClient } from '../utils/createUrqlClient';
-import { usePostsQuery } from '../generated/graphql';
+import {
+  useDeletePostMutation,
+  useMeQuery,
+  usePostsQuery
+} from '../generated/graphql';
 import {
   Box,
   Button,
   Flex,
   Heading,
+  IconButton,
   Link,
   Stack,
-  Text
+  Text,
+  Tooltip
 } from '@chakra-ui/react';
 import { Layout } from '../components/Layout';
 import { useState } from 'react';
 import { VoteSection } from '../components/VoteSection';
 import NextLink from 'next/link';
+import { DeleteIcon } from '@chakra-ui/icons';
 
 const Index = () => {
   const [variables, setVariables] = useState({
     limit: 10,
     cursor: null as string | null
   });
-  const [{ data, fetching }] = usePostsQuery({
+  const [{ data: postsData, fetching }] = usePostsQuery({
     variables
   });
+  const [, deletePost] = useDeletePostMutation();
+  const [{ data: meData }] = useMeQuery();
 
-  if (!fetching && !data)
+  if (!fetching && !postsData)
     return (
       <Text display='flex' fontSize='lg' width='min-content' mx='auto' my='8'>
         Something went wrong...
@@ -33,38 +42,55 @@ const Index = () => {
 
   return (
     <Layout>
-      {!fetching && data?.posts ? (
+      {!fetching && postsData?.posts ? (
         <Stack spacing='4'>
-          {data?.posts.posts.map((post) => (
-            <Box
-              key={post.id}
-              p='5'
-              shadow='md'
-              borderWidth='1px'
-              borderRadius='2xl'
-            >
-              <Flex>
-                <VoteSection post={post} />
-                <Box w='100%'>
-                  <Flex>
-                    <NextLink href='/post/[id]' as={`/post/${post.id}`}>
-                      <Link>
-                        <Heading fontSize='xl'>{post.title}</Heading>
-                      </Link>
-                    </NextLink>
-                    <Text ml='auto' textColor='gray.500'>
-                      {post.creator.username} |{' '}
-                      {new Date(parseInt(post.createdAt)).toLocaleString(
-                        'en-US'
-                      )}
-                    </Text>
-                  </Flex>
+          {postsData?.posts.posts.map((post) =>
+            !post ? null : (
+              <Box
+                key={post.id}
+                p='5'
+                shadow='md'
+                borderWidth='1px'
+                borderRadius='2xl'
+              >
+                <Flex>
+                  <VoteSection post={post} />
+                  <Box w='100%'>
+                    <Flex align='center'>
+                      <NextLink href='/post/[id]' as={`/post/${post.id}`}>
+                        <Link>
+                          <Heading fontSize='xl'>{post.title}</Heading>
+                        </Link>
+                      </NextLink>
+                      <Tooltip label='Delete post' placement='right'>
+                        <IconButton
+                          visibility={
+                            post.creatorId === meData?.me?.id
+                              ? 'visible'
+                              : 'hidden'
+                          }
+                          onClick={() => deletePost({ postId: post.id })}
+                          aria-label='Delete Post'
+                          icon={<DeleteIcon />}
+                          size='sm'
+                          colorScheme='red'
+                          variant='link'
+                        />
+                      </Tooltip>
+                      <Text ml='auto' textColor='gray.500'>
+                        {post.creator.username} |{' '}
+                        {new Date(parseInt(post.createdAt)).toLocaleString(
+                          'en-US'
+                        )}
+                      </Text>
+                    </Flex>
 
-                  <Text mt='2'>{post.textSnippet}</Text>
-                </Box>
-              </Flex>
-            </Box>
-          ))}
+                    <Text mt='2'>{post.textSnippet}</Text>
+                  </Box>
+                </Flex>
+              </Box>
+            )
+          )}
         </Stack>
       ) : (
         <Text display='flex' fontSize='lg' width='min-content' mx='auto' my='8'>
@@ -72,7 +98,7 @@ const Index = () => {
         </Text>
       )}
 
-      {data?.posts.hasMore && (
+      {postsData?.posts.hasMore && (
         <Button
           isLoading={fetching}
           display='flex'
@@ -81,7 +107,9 @@ const Index = () => {
           onClick={() => {
             setVariables({
               limit: variables.limit,
-              cursor: data.posts.posts[data.posts.posts.length - 1].createdAt
+              cursor:
+                postsData.posts.posts[postsData.posts.posts.length - 1]
+                  .createdAt
             });
           }}
         >
