@@ -1,10 +1,4 @@
-import { withUrqlClient } from 'next-urql';
-import { createUrqlClient } from '../utils/createUrqlClient';
-import {
-  useDeletePostMutation,
-  useMeQuery,
-  usePostsQuery
-} from '../generated/graphql';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -13,14 +7,19 @@ import {
   IconButton,
   Link,
   Stack,
-  Text,
-  Tooltip
+  Text
 } from '@chakra-ui/react';
-import { Layout } from '../components/Layout';
-import { useState } from 'react';
-import { VoteSection } from '../components/VoteSection';
+import { withUrqlClient } from 'next-urql';
 import NextLink from 'next/link';
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import { useState } from 'react';
+import { Layout } from '../components/Layout';
+import { VoteSection } from '../components/VoteSection';
+import {
+  useDeletePostMutation,
+  useMeQuery,
+  usePostsQuery
+} from '../generated/graphql';
+import { createUrqlClient } from '../utils/createUrqlClient';
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -65,41 +64,37 @@ const Index = () => {
                           <Heading fontSize='xl'>{post.title}</Heading>
                         </Link>
                       </NextLink>
-                      <Tooltip label='Edit post' placement='top'>
-                        <NextLink
-                          href='/post/edit/[id]'
-                          as={`/post/edit/${post.id}`}
-                        >
-                          <IconButton
-                            as={Link}
-                            ml='2'
-                            visibility={
-                              post.creatorId === meData?.me?.id
-                                ? 'visible'
-                                : 'hidden'
-                            }
-                            aria-label='Edit Post'
-                            icon={<EditIcon />}
-                            size='sm'
-                            variant='link'
-                          />
-                        </NextLink>
-                      </Tooltip>
-                      <Tooltip label='Delete post' placement='top'>
+                      <NextLink
+                        href='/post/edit/[id]'
+                        as={`/post/edit/${post.id}`}
+                      >
                         <IconButton
+                          as={Link}
+                          ml='2'
                           visibility={
                             post.creatorId === meData?.me?.id
                               ? 'visible'
                               : 'hidden'
                           }
-                          onClick={() => deletePost({ postId: post.id })}
-                          aria-label='Delete Post'
-                          icon={<DeleteIcon />}
+                          aria-label='Edit Post'
+                          icon={<EditIcon />}
                           size='sm'
-                          colorScheme='red'
                           variant='link'
                         />
-                      </Tooltip>
+                      </NextLink>
+                      <IconButton
+                        visibility={
+                          post.creatorId === meData?.me?.id
+                            ? 'visible'
+                            : 'hidden'
+                        }
+                        onClick={() => deletePost({ postId: post.id })}
+                        aria-label='Delete Post'
+                        icon={<DeleteIcon />}
+                        size='sm'
+                        colorScheme='red'
+                        variant='link'
+                      />
                       <Text ml='auto' textColor='gray.500'>
                         {post.creator.username} |{' '}
                         {new Date(parseInt(post.createdAt)).toLocaleString(

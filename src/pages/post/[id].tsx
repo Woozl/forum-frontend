@@ -7,8 +7,7 @@ import {
   Link,
   Skeleton,
   Stack,
-  Text,
-  Tooltip
+  Text
 } from '@chakra-ui/react';
 import { withUrqlClient } from 'next-urql';
 import NextLink from 'next/link';
@@ -52,37 +51,33 @@ const Post = ({}) => {
     <Layout variant='regular'>
       <Flex>
         <Heading>{data.post.title ?? ''}</Heading>
-        <Tooltip label='Edit post' placement='top'>
-          <NextLink href='/post/edit/[id]' as={`/post/edit/${data.post.id}`}>
-            <IconButton
-              as={Link}
-              ml='2'
-              visibility={
-                data.post.creatorId === meData?.me?.id ? 'visible' : 'hidden'
-              }
-              aria-label='Edit Post'
-              icon={<EditIcon />}
-              size='sm'
-              variant='link'
-            />
-          </NextLink>
-        </Tooltip>
-        <Tooltip label='Delete post' placement='top'>
+        <NextLink href='/post/edit/[id]' as={`/post/edit/${data.post.id}`}>
           <IconButton
+            as={Link}
+            ml='2'
             visibility={
               data.post.creatorId === meData?.me?.id ? 'visible' : 'hidden'
             }
-            onClick={async () => {
-              await deletePost({ postId: intId });
-              router.push('/');
-            }}
-            aria-label='Delete Post'
-            icon={<DeleteIcon />}
+            aria-label='Edit Post'
+            icon={<EditIcon />}
             size='sm'
-            colorScheme='red'
             variant='link'
           />
-        </Tooltip>
+        </NextLink>
+        <IconButton
+          visibility={
+            data.post.creatorId === meData?.me?.id ? 'visible' : 'hidden'
+          }
+          onClick={async () => {
+            await deletePost({ postId: intId });
+            router.push('/');
+          }}
+          aria-label='Delete Post'
+          icon={<DeleteIcon />}
+          size='sm'
+          colorScheme='red'
+          variant='link'
+        />
       </Flex>
       <Divider mt='4' mb='4' borderTop='3px dashed gray' />
       <Text>{data.post.text ?? ''}</Text>
