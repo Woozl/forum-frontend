@@ -27,7 +27,7 @@ const Index = () => {
     limit: 10,
     cursor: null as string | null
   });
-  const [{ data: postsData, fetching }] = usePostsQuery({
+  const [{ data: postsData, fetching, error }] = usePostsQuery({
     variables
   });
   const [, deletePost] = useDeletePostMutation();
@@ -35,9 +35,12 @@ const Index = () => {
 
   if (!fetching && !postsData)
     return (
-      <Text display='flex' fontSize='lg' width='min-content' mx='auto' my='8'>
-        Something went wrong...
-      </Text>
+      <>
+        <Text display='flex' fontSize='lg' mx='auto' my='8'>
+          Something went wrong...
+        </Text>
+        <Text>{error?.message}</Text>
+      </>
     );
 
   return (
