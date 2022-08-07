@@ -1,0 +1,13 @@
+mutation UpdatePost(
+  $text: String!
+  $title: String!
+  $updatePostId: Int!
+  $clipLength: Float
+) {
+  updatePost(text: $text, title: $title, id: $updatePostId) {
+    id
+    title
+    text
+    textSnippet(clipLength: $clipLength)
+  }
+}

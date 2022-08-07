@@ -20,7 +20,7 @@ import { Layout } from '../components/Layout';
 import { useState } from 'react';
 import { VoteSection } from '../components/VoteSection';
 import NextLink from 'next/link';
-import { DeleteIcon } from '@chakra-ui/icons';
+import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -62,7 +62,27 @@ const Index = () => {
                           <Heading fontSize='xl'>{post.title}</Heading>
                         </Link>
                       </NextLink>
-                      <Tooltip label='Delete post' placement='right'>
+                      <Tooltip label='Edit post' placement='top'>
+                        <NextLink
+                          href='/post/edit/[id]'
+                          as={`/post/edit/${post.id}`}
+                        >
+                          <IconButton
+                            as={Link}
+                            ml='2'
+                            visibility={
+                              post.creatorId === meData?.me?.id
+                                ? 'visible'
+                                : 'hidden'
+                            }
+                            aria-label='Edit Post'
+                            icon={<EditIcon />}
+                            size='sm'
+                            variant='link'
+                          />
+                        </NextLink>
+                      </Tooltip>
+                      <Tooltip label='Delete post' placement='top'>
                         <IconButton
                           visibility={
                             post.creatorId === meData?.me?.id
