@@ -8,11 +8,13 @@ import {
   IconButton
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import { useLogOutMutation, useMeQuery } from '../generated/graphql';
 
 interface NavBarProps {}
 
 export const NavBar: React.FC<NavBarProps> = () => {
+  const router = useRouter();
   const [{ data, fetching: meFetching }] = useMeQuery();
   const [{ fetching: LogOutFetching }, logout] = useLogOutMutation();
   let body = null;
@@ -40,7 +42,10 @@ export const NavBar: React.FC<NavBarProps> = () => {
             variant='solid'
             colorScheme='red'
             isLoading={LogOutFetching}
-            onClick={() => logout()}
+            onClick={async () => {
+              await logout();
+              router.reload();
+            }}
           >
             Log Out
           </Button>
