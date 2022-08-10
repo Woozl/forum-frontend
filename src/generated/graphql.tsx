@@ -149,7 +149,7 @@ export type UserResponse = {
   user?: Maybe<User>;
 };
 
-export type PostSnippetFragment = { __typename?: 'Post', title: string, text: string, textSnippet: string, points: number, voteStatus?: number | null, creatorId: number, id: number, createdAt: string, updatedAt: string, creator: { __typename?: 'User', id: number, username: string } };
+export type PostSnippetFragment = { __typename?: 'Post', title: string, text: string, points: number, voteStatus?: number | null, creatorId: number, id: number, createdAt: string, updatedAt: string, creator: { __typename?: 'User', id: number, username: string } };
 
 export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
@@ -243,13 +243,12 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', title: string, text: string, textSnippet: string, points: number, voteStatus?: number | null, creatorId: number, id: number, createdAt: string, updatedAt: string, creator: { __typename?: 'User', id: number, username: string } }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PaginatedPosts', hasMore: boolean, posts: Array<{ __typename?: 'Post', textSnippet: string, title: string, text: string, points: number, voteStatus?: number | null, creatorId: number, id: number, createdAt: string, updatedAt: string, creator: { __typename?: 'User', id: number, username: string } }> } };
 
 export const PostSnippetFragmentDoc = gql`
     fragment PostSnippet on Post {
   title
   text
-  textSnippet(clipLength: $clipLength)
   points
   voteStatus
   creatorId
@@ -401,21 +400,10 @@ export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, '
 export const PostDocument = gql`
     query Post($postId: Int!) {
   post(id: $postId) {
-    title
-    text
-    points
-    voteStatus
-    creatorId
-    id
-    createdAt
-    updatedAt
-    creator {
-      id
-      username
-    }
+    ...PostSnippet
   }
 }
-    `;
+    ${PostSnippetFragmentDoc}`;
 
 export function usePostQuery(options: Omit<Urql.UseQueryArgs<PostQueryVariables>, 'query'>) {
   return Urql.useQuery<PostQuery>({ query: PostDocument, ...options });
@@ -426,6 +414,7 @@ export const PostsDocument = gql`
     hasMore
     posts {
       ...PostSnippet
+      textSnippet(clipLength: $clipLength)
     }
   }
 }

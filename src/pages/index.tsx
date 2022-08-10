@@ -20,11 +20,13 @@ import {
   usePostsQuery
 } from '../generated/graphql';
 import { createUrqlClient } from '../utils/createUrqlClient';
+import dateFormatOptions from '../utils/dateFormatOptions';
 
 const Index = () => {
   const [variables, setVariables] = useState({
     limit: 10,
-    cursor: null as string | null
+    cursor: null as string | null,
+    clipLength: 300
   });
   const [{ data: postsData, fetching, error }] = usePostsQuery({
     variables
@@ -95,12 +97,19 @@ const Index = () => {
                         colorScheme='red'
                         variant='link'
                       />
-                      <Text ml='auto' textColor='gray.500'>
-                        {post.creator.username} |{' '}
-                        {new Date(parseInt(post.createdAt)).toLocaleString(
-                          'en-US'
-                        )}
-                      </Text>
+                      <Flex ml='auto' textColor='gray.500'>
+                        <Text color='blackAlpha.800' fontWeight='bold'>
+                          {post.creator.username}
+                        </Text>
+                        <Text pl='2' pr='2'>
+                          •
+                        </Text>
+                        <Text>
+                          {new Date(
+                            parseInt(post.createdAt)
+                          ).toLocaleTimeString('en-US', dateFormatOptions)}
+                        </Text>
+                      </Flex>
                     </Flex>
 
                     <Text mt='2'>{post.textSnippet}</Text>
@@ -116,23 +125,30 @@ const Index = () => {
         </Text>
       )}
 
-      {postsData?.posts.hasMore && (
+      {postsData?.posts.hasMore ? (
         <Button
           isLoading={fetching}
           display='flex'
           my='8'
           mx='auto'
           onClick={() => {
-            setVariables({
-              limit: variables.limit,
-              cursor:
-                postsData.posts.posts[postsData.posts.posts.length - 1]
-                  .createdAt
+            setVariables((prev) => {
+              return {
+                limit: variables.limit,
+                cursor:
+                  postsData.posts.posts[postsData.posts.posts.length - 1]
+                    .createdAt,
+                clipLength: prev.clipLength
+              };
             });
           }}
         >
           Load more...
         </Button>
+      ) : (
+        <Text my='4' textAlign='center'>
+          You've reached the end!
+        </Text>
       )}
     </Layout>
   );

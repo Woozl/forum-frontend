@@ -5,9 +5,13 @@ import { PostSnippetFragment, useVoteMutation } from '../generated/graphql';
 
 interface VoteSectionProps {
   post: PostSnippetFragment;
+  size?: 'regular' | 'small';
 }
 
-export const VoteSection: React.FC<VoteSectionProps> = ({ post }) => {
+export const VoteSection: React.FC<VoteSectionProps> = ({
+  post,
+  size = 'regular'
+}) => {
   const [loadingState, setLoadingState] = useState<
     'upvote-loading' | 'downvote-loading' | 'not-loading'
   >('not-loading');
@@ -27,7 +31,7 @@ export const VoteSection: React.FC<VoteSectionProps> = ({ post }) => {
         }}
         isLoading={loadingState === 'upvote-loading'}
         variant={post.voteStatus === 1 ? 'solid' : 'outline'}
-        size='sm'
+        size={size === 'regular' ? 'sm' : 'xs'}
         aria-label='upvote'
         colorScheme='blue'
         icon={<TriangleUpIcon />}
@@ -45,7 +49,7 @@ export const VoteSection: React.FC<VoteSectionProps> = ({ post }) => {
         }}
         isLoading={loadingState === 'downvote-loading'}
         variant={post.voteStatus === -1 ? 'solid' : 'outline'}
-        size='sm'
+        size={size === 'regular' ? 'sm' : 'xs'}
         aria-label='downvote'
         colorScheme='red'
         icon={<TriangleDownIcon />}

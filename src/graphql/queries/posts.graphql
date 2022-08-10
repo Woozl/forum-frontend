@@ -3,6 +3,7 @@ query Posts($limit: Int!, $cursor: String, $clipLength: Float) {
     hasMore
     posts {
       ...PostSnippet
+      textSnippet(clipLength: $clipLength)
     }
   }
 }

@@ -1,7 +1,6 @@
 fragment PostSnippet on Post {
   title
   text
-  textSnippet(clipLength: $clipLength)
   points
   voteStatus
   creatorId
