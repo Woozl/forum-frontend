@@ -125,7 +125,7 @@ const Index = () => {
         </Text>
       )}
 
-      {postsData?.posts.hasMore ? (
+      {postsData?.posts.hasMore && (
         <Button
           isLoading={fetching}
           display='flex'
@@ -145,10 +145,6 @@ const Index = () => {
         >
           Load more...
         </Button>
-      ) : (
-        <Text my='4' textAlign='center'>
-          You've reached the end!
-        </Text>
       )}
     </Layout>
   );
