@@ -15,7 +15,8 @@ import {
   LoginMutation,
   RegisterMutation,
   VoteMutationVariables,
-  DeletePostMutationVariables
+  DeletePostMutationVariables,
+  UpdatePostMutationVariables
 } from '../generated/graphql';
 import { betterUpdateQuery } from './betterUpdateQuery';
 
@@ -109,6 +110,34 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
         },
         updates: {
           Mutation: {
+            updatePost: (_result, args, cache, info) => {
+              const { updatePostId, text } =
+                args as UpdatePostMutationVariables;
+              const data = cache.readFragment(
+                gql`
+                  fragment _ on Post {
+                    id
+                    text
+                  }
+                `,
+                { id: updatePostId } as any
+              );
+
+              if (data) {
+                if (data.text === text) {
+                  return;
+                }
+                cache.writeFragment(
+                  gql`
+                    fragment __ on Post {
+                      points
+                      voteStatus
+                    }
+                  `,
+                  { id: updatePostId, text: data.text } as any
+                );
+              }
+            },
             deletePost: (_result, args, cache, info) => {
               // console.log('start');
               // console.log(cache.inspectFields('Post'));
