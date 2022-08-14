@@ -45,7 +45,7 @@ Users are stored in a Postgres table, along with their hashed password. Note tha
 
 ![Voting on a post](screenshots/upvote.gif)
 
-Users can vote on a post through a GraphQL mutation which does the relevent authetication checks. If the user is not logged in, it redirects them to the login page. If all the checks pass, the vote is stored in a seperate table with foreign keys for both the user and post. An update is specified in `createUrqlClient.ts` on the `vote` mutation to rewrite the cache with the updated vote information. This means the user will immediately see the effect of their vote.
+Users can vote on a post through a GraphQL mutation which does the relevent authentication checks. If the user is not logged in, it redirects them to the login page. If all the checks pass, the vote is stored in a seperate table with foreign keys for both the user and post. An update is specified in `createUrqlClient.ts` on the `vote` mutation to rewrite the cache with the updated vote information. This means the user will immediately see the effect of their vote.
 
 On the front-end, Chakru UI `IconButtons` are configured to show loading spinners while the data is fetching, and then turn a solid color indicating the vote status.
 
@@ -53,7 +53,7 @@ On the front-end, Chakru UI `IconButtons` are configured to show loading spinner
 
 ![View posts using cursor-based pagination](screenshots/post-pagination.gif)
 
-The `posts` query takes in a `limit` and optionally a `cursor` argument. Thus, the UI can render a selection of all the posts and user the `cursor` argument to get the next batch when required. This implementation gets the posts added before the `cursor`, which is specified as a Unix timestamp date. Theoretically, two posts could be posted at exactly the same time, causing a tie. In a production app, this pagination could be improved by allowing sorting on different parameters or directions.
+The `posts` query takes in a `limit` and optionally a `cursor` argument. Thus, the UI can render a selection of all the posts and use the `cursor` argument to get the next batch when required. This implementation gets the posts added before the `cursor`, which is specified as a Unix timestamp date. Theoretically, two posts could be posted at exactly the same time, causing a tie. In a production app, this pagination could be improved by allowing sorting on different parameters or directions.
 
 ### Viewing a post
 
